@@ -17,6 +17,6 @@ DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:5432/{DB_NAME}"
 
 
 settings = Dynaconf(
-    envvar_prefix=False,  
-    settings_files=[".env"],  
+    envvar_prefix=False,
+    settings_files=[".env"],
 )
