@@ -33,6 +33,7 @@ const App = () => {
       if (response.ok) {
         const data = await response.json();
         setResults(data); // Backend'den gelen veriyi kaydet
+        console.log(data);
         showSnackbar("Data sent successfully!", false); // Başarılı bildirim
       } else {
         setResults(null);

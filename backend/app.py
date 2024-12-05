@@ -5,7 +5,6 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-
 @app.route("/api/domain", methods=["POST"])
 def domain_handler():
     """
@@ -31,6 +30,9 @@ def domain_handler():
                         "Geometric_Location": result["data"]["Geometric_Location"],
                         "City": result["data"]["City"],
                         "Country": result["data"]["Country"],
+                        "Source": result["data"].get("Source", "Unknown"),
+                        "Category": result["data"].get("Category", "Unknown"),
+                        "Is_Valid": result["data"].get("Is_Valid", "Unknown"),
                     }
                 ),
                 200,
