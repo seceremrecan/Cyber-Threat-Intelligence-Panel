@@ -1,93 +1,90 @@
+.results-card {
+  background-color: #121212;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.card-item {
+  background-color: rgb(33, 37, 41); /* Card background */
+  color: white; /* Default text color */
+  border-radius: 5px;
+  padding: 20px;
+  margin: 10px;
+  width: calc(33.33% - 20px); /* Three cards in a row */
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.5);
+  position: relative; /* For popups */
+  cursor: pointer;
+}
+
+.card-item:hover {
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5); /* Highlight on hover */
+}
+
+.card-item h4 {
+  font-weight: bold;
+  color: #198754; /* Heading color */
+}
+
+.popup-item {
+  margin-bottom: 8px;
+}
+.card-item.same-size {
+  flex: 1 1 calc(30% - 20px); /* Diğer kartlarla aynı boyutta */
+}
 
 
+.popup-item:last-child {
+  margin-bottom: 0;
+}
+
+/* HTTP Security Status Styles */
+.status-yes {
+  color: green;
+  font-weight: bold;
+}
+
+.status-no {
+  color: red;
+  font-weight: bold;
+}
+.http-security-card {
+  flex: 1 1 calc(30% - 20px); /* Diğer kartlarla aynı boyutta */
+  background-color: rgb(33, 37, 41);
+  color: white;
+  border-radius: 5px;
+  padding: 20px;
+  margin: 10px;
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.5);
+}
+
+.http-security-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.http-security-table th,
+.http-security-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
 
 
-   .results-card {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-  }
-  
-  .card-item {
-    background-color: #f2f2f2;
-    border-radius: 5px;
-    padding: 20px;
-    margin: 10px;
-    width: calc(28% - 10px);
-    box-shadow: 0px 0px 8px 0px #ccc;
-    position: relative;
-  }
-  
-  .card-item h4,
-  .card-item p {
-    margin: 5px 0;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-  
-  .info-btn {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: #007bff;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-  }
-  
-  .popup-content {
-    display: none;
-    background-color: white;
-    position: absolute;
-    top: 30px;
-    right: 0;
-    width: 400px;
-    box-shadow: 0px 0px 8px 0px #ccc;
-    z-index: 1;
-    padding: 10px;
-    max-height: 300px;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  
-  .copy-btn {
-    position: absolute;
-    top: 5px;
-    right: 30px;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    color: white;
-    text-align: center;
-    cursor: pointer;
-  }
-  
-  #snackbar {
-    visibility: hidden;
-    min-width: 250px;
-    margin-left: -125px;
-    background-color: #4caf50;
-    color: #ffffff;
-    text-align: center;
-    border-radius: 2px;
-    padding: 10px;
-    position: fixed;
-    z-index: 1;
-    left: 50%;
-    bottom: 30px;
-    font-size: 17px;
-  }
-  
-  #snackbar.show {
-    visibility: visible;
-    bottom: 50px;
-  }
-  
+.http-security-table tr.yes {
+  background-color: rgba(0, 255, 0, 0.1);
+}
+
+.http-security-table th {
+  background-color: #198754;
+  color: white;
+  font-weight: bold;
+}
+
+.http-security-table td:first-child {
+  font-weight: bold;
+}
