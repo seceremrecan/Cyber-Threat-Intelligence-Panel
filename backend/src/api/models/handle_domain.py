@@ -57,31 +57,58 @@ def check_http_security(domain: str):
         ]]
 
     
+def log_to_database(ioc, ip, ioc_type, geometric_location, city, country, is_valid, source, malicious):
+    """
+    IoC bilgilerini log_ioc tablosuna kaydetmek için kullanılan fonksiyon.
+    """
+    session = Session()
+    try:
+        existing_entry = session.query(ApiIoC).filter_by(ioc=ioc).first()
+        if existing_entry:
+            existing_entry.ip = ip
+            existing_entry.ioc_type = ioc_type
+            existing_entry.geometric_location = geometric_location
+            existing_entry.city = city
+            existing_entry.country = country
+            existing_entry.is_valid = is_valid
+            existing_entry.source = source
+            existing_entry.malicious = malicious
+            existing_entry.updated_time = datetime.utcnow()
+            print(f"Updated IoC: {ioc}")
+        else:
+            new_entry = ApiIoC(
+                ioc=ioc,
+                ip=ip,
+                ioc_type=ioc_type,
+                geometric_location=geometric_location,
+                city=city,
+                country=country,
+                is_valid=is_valid,
+                source=source,
+                malicious=malicious,
+            )
+            session.add(new_entry)
+            print(f"Added new IoC: {ioc}")
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        print(f"Error logging IoC: {e}")
+    finally:
+        session.close()
 
 def handle_domain(ioc: str):
     session = Session()
-    ioc = ioc.strip().lower()  # Leading veya trailing boşlukları temizle ve küçük harfe çevir
-
+    ioc = ioc.strip().lower()
     print(f"Processing IoC: {ioc}")
     try:
-        if is_email(ioc):  # IoC'nin e-posta olup olmadığını kontrol et
+        if is_email(ioc):
             ioc_type = "Email"
-            print(f"Querying email: {ioc}")
-
-            # Emails tablosunda e-posta sorgula
             email_query = session.execute(
                 text("SELECT email, data_breach_id FROM emails WHERE TRIM(LOWER(email)) = TRIM(:email)"),
                 {"email": ioc}
             ).fetchone()
-
-            print(f"Email Query Result: {email_query}")  # Debug için sonucu yazdır
-
             if email_query:
-                # `data_breach_id` değerini al
-                email, data_breach_id = email_query  # Tuple unpacking
-                print(f"Email found: {email}, Data Breach ID: {data_breach_id}")
-
-                # `data_breach_id` ile data_breach tablosunda veri sorgula
+                email, data_breach_id = email_query
                 breach_query = session.execute(
                     text("""
                         SELECT company_name, type, date_published, records_affected, description
@@ -90,17 +117,19 @@ def handle_domain(ioc: str):
                     """),
                     {"data_breach_id": data_breach_id}
                 ).fetchone()
-
-                print(f"Data Breach Query Result: {breach_query}")  # Debug için sonucu yazdır
-
                 if breach_query:
-                    # Tuple unpacking kullanarak alanlara erişim
                     company_name, breach_type, date_published, records_affected, description = breach_query
-
-                    print(f"Data Breach Found: {company_name}")
-                    
-
-                    # Data breach verilerini döndür
+                    log_to_database(
+                        ioc=ioc,
+                        ip="",
+                        ioc_type=ioc_type,
+                        geometric_location="",
+                        city="",
+                        country="",
+                        is_valid="Valid",
+                        source="Database",
+                        malicious="",
+                    )
                     return {
                         "status": "success",
                         "message": "Email IoC processed.",
@@ -108,42 +137,17 @@ def handle_domain(ioc: str):
                             "IoC": ioc,
                             "Company_Name": company_name,
                             "Type": ioc_type,
-                            "Breach_Type":breach_type,
+                            "Breach_Type": breach_type,
                             "Date_Published": str(date_published),
                             "Records_Affected": records_affected,
                             "Description": description or "",
-                            "Http_Security": [],  # No HTTP Security for email
-                        },
-                    }
-                    
-                else:
-                    print("No matching data breach found.")
-                    return {
-                        "status": "success",
-                        "message": "Email IoC processed, no data breach information found.",
-                        "data": {
-                            "IoC": ioc,
-                            "Type": ioc_type,
                             "Http_Security": [],
                         },
                     }
-            else:
-                print(f"Email '{ioc}' not found in the emails table.")
-                return {
-                    "status": "failed",
-                    "message": f"Email '{ioc}' not found in the database.",
-                }
-
         else:
-            # AlienVault API kullanarak IoC türünü belirle
             alienvault_data = get_alienvault_data(ioc)
             ioc_type = alienvault_data.get("type", "Unknown")
-            print(f"AlienVault detected type: {ioc_type}")
-
-            # Domain veya IP kontrolü
             domain_entry = session.query(DomainIoC).filter_by(address=ioc).first()
-            print(f"Domain Entry from Database: {domain_entry}")
-
             if domain_entry:
                 source = domain_entry.source
                 is_valid = "Valid" if domain_entry.is_valid else "Invalid"
@@ -155,14 +159,7 @@ def handle_domain(ioc: str):
                 malicious = ""
                 address_type = ioc_type
 
-            print(f"Resolved Values - Source: {source}, Is Valid: {is_valid}")
             http_security = check_http_security(ioc)
-            if not alienvault_data or not alienvault_data.get("data"):
-                return {
-                    "status": "failed",
-                    "message": f"No data found for '{ioc}' in AlienVault or database.",
-                }
-
             ip_data = get_ip_location(ioc)
             lat = ip_data.get("lat", "")
             lon = ip_data.get("lon", "")
@@ -171,9 +168,19 @@ def handle_domain(ioc: str):
             country = ip_data.get("country", "")
             ip = ip_data.get("query", "")
 
-            print(f"Location Data - Lat: {lat}, Lon: {lon}, City: {city}, Country: {country}")
+            # Log IoC to database
+            log_to_database(
+                ioc=ioc,
+                ip=ip,
+                ioc_type=ioc_type,
+                geometric_location=geometric_location,
+                city=city,
+                country=country,
+                is_valid=is_valid,
+                source=source,
+                malicious=malicious,
+            )
 
-            # Döndürülecek sonuç
             return {
                 "status": "success",
                 "message": "Domain or IP processed.",
@@ -187,18 +194,14 @@ def handle_domain(ioc: str):
                     "Source": source,
                     "Is_Valid": is_valid,
                     "Malicious": malicious,
-                    "Address_Type": address_type,
                     "Http_Security": http_security,
                 },
             }
-
     except Exception as e:
         import traceback
         print(f"Exception occurred: {str(e)}")
         traceback.print_exc()
         return {"status": "failed", "message": str(e)}
-
     finally:
         print("Closing database session.")
         session.close()
-
