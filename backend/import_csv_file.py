@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine
 from datetime import datetime
-import pytz  # Zaman dilimi desteği için eklenen kütüphane
+import pytz  # Zaman dilimi desteği için
 
 # PostgreSQL bağlantı bilgileri
 DB_USER = 'postgres'
@@ -14,40 +14,39 @@ DB_NAME = 'cti_panel'
 DATABASE_URL = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # CSV dosyasının yolu
-CSV_FILE_PATH = r"C:\Users\secer\OneDrive\Masaüstü\MaliciousIpAddress.csv"  
+CSV_FILE_PATH = r"C:\Users\secer\OneDrive\Masaüstü\filtered_urls.csv"
 
 # SQLAlchemy engine oluştur
 engine = create_engine(DATABASE_URL)
 
-# CSV'yi oku, sütun adlarını yok say
+# CSV'yi oku
 df = pd.read_csv(CSV_FILE_PATH, header=None)  # `header=None` sütun adlarını göz ardı eder
+df = df[[0]].rename(columns={0: 'address'})  # İlk sütunu 'address' olarak yeniden adlandır
 
-# A sütununu al (ilk sütun olduğu için `df[0]`)
-df = df[[0]].rename(columns={0: 'ip_address'})  # İlk sütunu 'ip_address' olarak yeniden adlandır
-
-# Türkiye saat dilimini ayarlayın
+# Türkiye saat dilimini ayarla
 turkey_tz = pytz.timezone('Europe/Istanbul')
 current_time_turkey = datetime.now(turkey_tz)
 
-# Ek sütunları ekleyerek DataFrame'i hazırlayın
+# Ek sütunları ekleyerek DataFrame'i hazırla
+df['address_type'] = 'Domain'  # Adres tipini "Domain" olarak ayarla
 df['created_time'] = current_time_turkey  # Türkiye saatine göre zamanı atayın
-df['updated_time'] = None  # İsterseniz updated_time'ı boş bırakabilirsiniz
-df['source'] = 'USOM'  # Kaynağı USOM olarak atayın
-df['category'] = 'Phishing'  # Kategori olarak Phishing atayın
-df['is_valid'] = True  # Varsayılan olarak geçerli kabul edin
+df['updated_time'] = None  # Güncelleme zamanı boş bırakılabilir
+df['source'] = 'Phistank'  # Kaynak sütununa "USOM" yaz
+df['malicious'] = 'Phishing'  # Kötücül davranışı "Phishing" olarak ayarla
+df['is_valid'] = True  # Geçerli adres olarak işaretle
 
 # Veritabanına ekleme veya güncelleme işlemi
 try:
     # Veritabanındaki mevcut verileri çek
-    existing_data = pd.read_sql('SELECT ip_address FROM ip_ioc', engine)
-    
+    existing_data = pd.read_sql('SELECT address FROM all_iocs', engine)
+
     # Yeni verilerle mevcut veriler arasındaki farkı bulun
-    new_data = df[~df['ip_address'].isin(existing_data['ip_address'])]
-    
+    new_data = df[~df['address'].isin(existing_data['address'])]
+
     # Yeni verileri ekle
     if not new_data.empty:
-        new_data[['ip_address', 'created_time', 'updated_time', 'source', 'category', 'is_valid']].to_sql(
-            'ip_ioc',  # Tablo adı
+        new_data.to_sql(
+            'all_iocs',  # Tablo adı
             engine,
             if_exists='append',  # Mevcut tabloya ekle
             index=False  # DataFrame'deki index sütununu ekleme
@@ -55,19 +54,19 @@ try:
         print(f"{len(new_data)} yeni kayıt eklendi.")
     else:
         print("Eklemek için yeni veri bulunamadı.")
-    
+
     # Mevcut verilerden güncellenmesi gerekenleri işle
-    updated_data = df[df['ip_address'].isin(existing_data['ip_address'])]
+    updated_data = df[df['address'].isin(existing_data['address'])]
     if not updated_data.empty:
         with engine.connect() as conn:
             for _, row in updated_data.iterrows():
                 conn.execute(f"""
-                    UPDATE ip_ioc
+                    UPDATE all_iocs
                     SET updated_time = '{current_time_turkey}',
                         source = '{row['source']}',
-                        category = '{row['category']}',
+                        malicious = '{row['malicious']}',
                         is_valid = {row['is_valid']}
-                    WHERE ip_address = '{row['ip_address']}'
+                    WHERE address = '{row['address']}'
                 """)
         print(f"{len(updated_data)} kayıt güncellendi.")
 

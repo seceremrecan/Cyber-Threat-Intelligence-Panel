@@ -25,14 +25,21 @@ def domain_handler():
                 jsonify(
                     {
                         "IoC": result["data"]["IoC"],
-                        "IP": result["data"]["IP"],
+                        "IP": result["data"].get("IP"),
                         "Type": result["data"]["Type"],
-                        "Geometric_Location": result["data"]["Geometric_Location"],
-                        "City": result["data"]["City"],
-                        "Country": result["data"]["Country"],
-                        "Source": result["data"].get("Source", "Unknown"),
-                        "Category": result["data"].get("Category", "Unknown"),
-                        "Is_Valid": result["data"].get("Is_Valid", "Unknown"),
+                        "Geometric_Location": result["data"].get("Geometric_Location"),
+                        "City": result["data"].get("City"),
+                        "Country": result["data"].get("Country"),
+                        "Source": result["data"].get("Source"),
+                        "Is_Valid": result["data"].get("Is_Valid"),
+                        "Malicious": result["data"].get("Malicious"),  # Malicious eklendi
+                        "Data_Breach": {
+                            "Company_Name": result["data"].get("Company_Name"),
+                            "Breach_Type": result["data"].get("Breach_Type"),
+                            "Date_Published": result["data"].get("Date_Published"),
+                            "Records_Affected": result["data"].get("Records_Affected"),
+                            "Description": result["data"].get("Description"),
+                        },
                     }
                 ),
                 200,
@@ -46,6 +53,7 @@ def domain_handler():
             jsonify({"status": "error", "message": f"An error occurred: {str(e)}"}),
             500,
         )
+
 
 
 if __name__ == "__main__":

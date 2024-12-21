@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:13
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: cti_panel
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 258258258
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./backend/cti_panel_dump.sql:/docker-entrypoint-initdb.d/cti_panel_dump.sql
+    healthcheck: # PostgreSQL'in hazır olduğunu kontrol eder
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy # PostgreSQL hazır olana kadar bekler
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pg_data:

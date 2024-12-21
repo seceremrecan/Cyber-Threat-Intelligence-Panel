@@ -1,0 +1,13 @@
+flask
+flask-cors
+flask-sqlalchemy
+psycopg2-binary
+dynaconf
+alembic
+requests
+flask-migrate
+python-dotenv
+gunicorn
+email-validator
+validators
+httpx
