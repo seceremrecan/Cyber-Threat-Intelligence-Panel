@@ -5,6 +5,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route("/api/domain", methods=["POST"])
 def domain_handler():
     """
@@ -32,7 +33,9 @@ def domain_handler():
                         "Country": result["data"].get("Country"),
                         "Source": result["data"].get("Source"),
                         "Is_Valid": result["data"].get("Is_Valid"),
-                        "Malicious": result["data"].get("Malicious"),  # Malicious eklendi
+                        "Malicious": result["data"].get(
+                            "Malicious"
+                        ),  # Malicious eklendi
                         "Data_Breach": {
                             "Company_Name": result["data"].get("Company_Name"),
                             "Breach_Type": result["data"].get("Breach_Type"),
@@ -40,6 +43,16 @@ def domain_handler():
                             "Records_Affected": result["data"].get("Records_Affected"),
                             "Description": result["data"].get("Description"),
                         },
+                        "Website_Status": {
+                            "UP_Status": result["data"]["Website_Status"].get("status"),
+                            "Last_Down": result["data"]["Website_Status"].get("last_down"),
+                        },
+                        "Http_Security": result["data"].get(
+                            "Http_Security",
+                        ),
+                        "DNS_Records": result["data"].get("DNS_Records", {}),
+                        "Robots_Disallows": result["data"].get("Robots_Disallows", []),
+                        "WHOIS_Data": result["data"].get("WHOIS_Data", {}),
                     }
                 ),
                 200,
@@ -53,7 +66,6 @@ def domain_handler():
             jsonify({"status": "error", "message": f"An error occurred: {str(e)}"}),
             500,
         )
-
 
 
 if __name__ == "__main__":
