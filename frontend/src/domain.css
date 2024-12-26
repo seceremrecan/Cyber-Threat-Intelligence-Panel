@@ -9,36 +9,55 @@
 }
 
 .card-item {
-  background-color: rgb(33, 37, 41); /* Card background */
-  color: white; /* Default text color */
+  background-color: rgb(33, 37, 41);
+  color: white;
   border-radius: 5px;
   padding: 20px;
   margin: 10px;
-  width: calc(33.33% - 20px); /* Three cards in a row */
+  width: calc(33.33% - 20px);
   box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.5);
-  position: relative; /* For popups */
-  cursor: pointer;
+  position: relative;
+  overflow: hidden; /* Scroll bar için gerekli */
 }
 
 .card-item:hover {
-  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5); /* Highlight on hover */
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
 }
 
 .card-item h4 {
   font-weight: bold;
-  color: #198754; /* Heading color */
+  color: #198754;
 }
 
 .popup-item {
   margin-bottom: 8px;
 }
-.card-item.same-size {
-  flex: 1 1 calc(30% - 20px); /* Diğer kartlarla aynı boyutta */
-}
-
 
 .popup-item:last-child {
   margin-bottom: 0;
+}
+
+/* Scrollable Content */
+.card-item div {
+  max-height: 200px; /* Kartın içeriği için maksimum yükseklik */
+  overflow-y: auto; /* Scroll bar etkinleştir */
+}
+
+.card-item div::-webkit-scrollbar {
+  width: 8px;
+}
+
+.card-item div::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.card-item div::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 8px;
+}
+
+.card-item div::-webkit-scrollbar-thumb:hover {
+  background: #888;
 }
 
 /* HTTP Security Status Styles */
@@ -51,8 +70,9 @@
   color: red;
   font-weight: bold;
 }
+
 .http-security-card {
-  flex: 1 1 calc(30% - 20px); /* Diğer kartlarla aynı boyutta */
+  flex: 1 1 calc(30% - 20px);
   background-color: rgb(33, 37, 41);
   color: white;
   border-radius: 5px;
@@ -74,7 +94,6 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-
 .http-security-table tr.yes {
   background-color: rgba(0, 255, 0, 0.1);
 }
@@ -87,4 +106,43 @@
 
 .http-security-table td:first-child {
   font-weight: bold;
+}
+
+.dns-records-card {
+  flex: 1 1 calc(100% - 20px); /* Geniş alan */
+}
+
+.robots-card {
+  flex: 1 1 calc(30% - 20px); /* Diğer kartlarla aynı genişlikte */
+}
+
+.robots-card ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 200px; /* robots.txt içeriği için maksimum yükseklik */
+  overflow-y: auto; /* Scroll bar etkinleştir */
+}
+
+.robots-card ul::-webkit-scrollbar {
+  width: 8px;
+}
+
+.robots-card ul::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.robots-card ul::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 8px;
+}
+
+.robots-card ul::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+.robots-card li {
+  color: white;
+  padding: 5px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
