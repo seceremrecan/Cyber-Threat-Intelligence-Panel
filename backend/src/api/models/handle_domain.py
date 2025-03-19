@@ -15,6 +15,7 @@ from playwright.sync_api import sync_playwright
 import time
 import requests
 import httpx
+import asyncio
 import logging
 from config import settings
 import re
