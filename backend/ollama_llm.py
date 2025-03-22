@@ -23,4 +23,4 @@ The content you will write should consist of the following headings:
 
 response = ollama.chat(model=model_name, messages=[{"role": "user", "content": query}])
 
-print(response['message']['content'])
+print(response["message"]["content"])
