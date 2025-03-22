@@ -15,6 +15,7 @@ from playwright.sync_api import sync_playwright
 import time
 import requests
 import httpx
+import asyncio
 import logging
 from config import settings
 import re
@@ -146,7 +147,11 @@ def get_website_status(domain: str):
         except requests.exceptions.Timeout:
             return {"status": "DOWN", "url": url, "error": "Request timed out."}
         except Exception as e:
-            return {"status": "DOWN", "url": url, "error": f"An error occurred: {str(e)}"}
+            return {
+                "status": "DOWN",
+                "url": url,
+                "error": f"An error occurred: {str(e)}",
+            }
 
     # HTTPS öncelikli kontrol
     result = None
@@ -190,9 +195,6 @@ def get_website_status(domain: str):
         "timestamp": timestamp,
         "error": "Failed to connect using HTTP or HTTPS.",
     }
-
-
-
 
 
 def get_dns_records(domain: str):
@@ -240,7 +242,6 @@ def get_robots_disallows(domain: str):
         return {"status": "success", "data": disallows}
     except Exception as e:
         return {"status": "error", "message": str(e)}
-
 
 
 def get_whois_data(ioc: str):

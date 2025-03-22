@@ -146,3 +146,187 @@
   padding: 5px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
+
+/* Küçük AI Butonu */
+.ai-analyze-btn {
+  background-color: #198754;
+  color: white;
+  border: none;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;  /* 📌 Butonu SAĞA sabitle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, transform 0.2s;
+  z-index: 10;
+  font-size: 18px;
+}
+.ai-icon {
+  width: 20px;  /* PNG boyutu */
+  height: 20px;
+  filter: invert(1); /* Beyaz yap (isteğe bağlı) */
+}
+
+/* Buton Hover Efekti */
+.ai-analyze-btn:hover {
+  background-color: #145a32;
+  transform: scale(1.1);
+}
+
+/* AI Butonuna Hover Yapınca Açıklama Göstermek (Sola) */
+.ai-analyze-btn::after {
+  content: "Yapay Zekaya Analiz Ettir";
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 8px 12px;  /* 📌 Daha büyük ve okunaklı */
+  border-radius: 5px;
+  top: 50%;  /* 📌 Butonun ortasına hizala */
+  left: -160px;  /* 📌 Butonun soluna taşı (İhtiyaca göre ayarla) */
+  transform: translateY(-50%);  /* 📌 Dikeyde ortalama */
+  font-size: 14px;  /* 📌 Yazıyı büyüttük */
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out, left 0.3s ease-in-out;
+  pointer-events: none;
+  z-index: 20;  /* 📌 Ön planda kalmasını sağla */
+}
+
+/* Hover yapıldığında tooltip görünür olsun */
+.ai-analyze-btn:hover::after {
+  opacity: 1;
+  left: -180px;  /* 📌 Hover yapınca hafif sola kaydır */
+}
+
+
+
+/* Normal Popup Stili */
+.ai-popup {
+  position: fixed;
+  top: 10%;  /* 📌 Popup üstten biraz boşluk bırakılarak hizalandı */
+  left: 50%;
+  transform: translate(-50%, 0); /* Yatayda ortalama */
+  background-color: #1e1e1e;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.3);
+  z-index: 999;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: left;
+  transition: all 0.3s ease-in-out;
+}
+/* Tam Ekran Popup */
+.ai-popup-fullscreen {
+  top: 0;
+  left: 0;
+  transform: none;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  padding: 5%; /* 📌 Tam ekran için daha fazla boşluk bırakıldı */
+  overflow-y: auto;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-popup-content {
+  text-align: left;
+}
+.ai-popup-expanded {
+  left: auto;
+  right: 0;
+  top: 0;
+  transform: none;
+  width: 40vw;  /* Ekranın %40'ını kaplasın */
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  padding: 30px;
+}
+
+/* Header Bölümü */
+.ai-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  position: relative;
+}
+.ai-popup button {
+  margin-top: 10px;
+  background-color: #198754;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+/* Küçült Butonu */
+.expand-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+/* Kapat Butonu Aşağıda */
+.popup-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+
+.ai-popup button:hover {
+  background-color: #145a32;
+}
+.ai-analysis-text p {
+  margin: 8px 0;
+  line-height: 1.6;
+}
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+}
+.ai-popup h3 {
+  text-align: center;
+  color: #16a085;
+  margin-bottom: 15px;
+}
+.close-btn {
+  width: 100%;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+.close-btn:hover {
+  background-color: #c0392b;
+}

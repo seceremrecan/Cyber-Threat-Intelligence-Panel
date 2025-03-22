@@ -11,3 +11,7 @@ gunicorn
 email-validator
 validators
 httpx
+selenium
+webdriver_manager
+beautifulsoup4
+playwright
