@@ -3,12 +3,6 @@
 .secrets.*
 cti_panel_dump.sql
 
-# node / react
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
 # python
 __pycache__/
 *.pyc
