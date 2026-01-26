@@ -1,3 +1,14 @@
+# env / secrets / dumps
 .env
-cti_panel_dump.sql
 .secrets.*
+cti_panel_dump.sql
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# build outputs
+dist/
+build/
